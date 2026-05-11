@@ -7,7 +7,8 @@
     <RootNamespace>CertWatch</RootNamespace>
     <AssemblyName>certwatch</AssemblyName>
     <InvariantGlobalization>true</InvariantGlobalization>
-    <Version>0.1.0</Version>
+    <Version>0.0.0-dev</Version>
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
     <Authors>Factus Consulting ApS</Authors>
     <Description>Agent-friendly CLI for monitoring SSL/TLS certificate expiry across many hosts.</Description>
     <RepositoryUrl>https://github.com/FactusConsulting/certwatch</RepositoryUrl>

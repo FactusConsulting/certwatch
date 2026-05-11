@@ -1,11 +1,16 @@
+using System.Reflection;
 using CertWatch;
 using Spectre.Console.Cli;
+
+var version = Assembly.GetExecutingAssembly()
+    .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
+    ?.InformationalVersion ?? "0.0.0-dev";
 
 var app = new CommandApp();
 app.Configure(config =>
 {
     config.SetApplicationName("certwatch");
-    config.SetApplicationVersion("0.1.0");
+    config.SetApplicationVersion(version);
     config.AddCommand<CheckCommand>("check")
         .WithDescription("Check certificate expiry on one or more hosts.")
         .WithExample("check", "ai-ops.dk", "factus.dk")
