@@ -34,10 +34,7 @@ public static class Checker
             var notBefore = cert.NotBefore.ToUniversalTime();
             var days = (int)Math.Floor((notAfter - now).TotalDays);
 
-            var severity = Severity.Ok;
-            if (now > notAfter || days < 0) severity = Severity.Critical;
-            else if (days <= critDays) severity = Severity.Critical;
-            else if (days <= warnDays) severity = Severity.Warning;
+            var severity = CalculateSeverity(days, warnDays, critDays);
 
             var sans = ExtractSans(cert);
             var keyAlg = GetKeyAlgorithm(cert);
@@ -55,7 +52,7 @@ public static class Checker
         }
     }
 
-    private static (string Host, int Port) ParseTarget(string raw, int defaultPort)
+    internal static (string Host, int Port) ParseTarget(string raw, int defaultPort)
     {
         var trimmed = raw.Replace("https://", "", StringComparison.OrdinalIgnoreCase).TrimEnd('/');
         var slash = trimmed.IndexOf('/');
@@ -105,6 +102,14 @@ public static class Checker
         }
         catch { }
         return null;
+    }
+
+    internal static Severity CalculateSeverity(int daysRemaining, int warnDays, int critDays)
+    {
+        if (daysRemaining < 0) return Severity.Critical;
+        if (daysRemaining <= critDays) return Severity.Critical;
+        if (daysRemaining <= warnDays) return Severity.Warning;
+        return Severity.Ok;
     }
 
     private static CertResult ErrorResult(string host, int port, string error) =>

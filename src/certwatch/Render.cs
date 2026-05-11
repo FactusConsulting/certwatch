@@ -58,7 +58,7 @@ public static class Render
             t.AddRow(status, Markup.Escape(hostStr), expires, days, issuer);
         }
         AnsiConsole.Write(t);
-        AnsiConsole.MarkupLineInterpolated(
+        AnsiConsole.MarkupLine(
             $"[grey]Total {rep.Total} · [/][green]{rep.Ok} ok[/][grey] · [/][yellow]{rep.Warning} warning[/][grey] · [/][red]{rep.Critical} critical[/][grey] · [/][red]{rep.Errors} error[/]");
     }
 
@@ -113,8 +113,8 @@ public static class Render
             Console.Error.WriteLine(JsonSerializer.Serialize(new ErrorResult(err, hint), JsonContext.Default.ErrorResult));
             return;
         }
-        AnsiConsole.MarkupLineInterpolated($"[red]error:[/] {err}");
-        if (hint != null) AnsiConsole.MarkupLineInterpolated($"[grey]hint:[/]  {hint}");
+        AnsiConsole.MarkupLine($"[red]error:[/] {err}");
+        if (hint != null) AnsiConsole.MarkupLine($"[grey]hint:[/]  {hint}");
     }
 
     public static string SeverityLabel(Severity s) => s switch
