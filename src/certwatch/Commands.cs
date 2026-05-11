@@ -128,11 +128,9 @@ public sealed class CheckCommand : AsyncCommand<CheckSettings>
     }
 }
 
-public sealed class HelpAiCommand : Command
+public static class AgentGuidance
 {
-    public override int Execute(CommandContext ctx)
-    {
-        Console.WriteLine("""
+    public const string Text = """
             certwatch — guidance for AI agents
 
             WHEN TO USE
@@ -167,7 +165,14 @@ public sealed class HelpAiCommand : Command
               certwatch check ai-ops.dk factus.dk --json | jq '.results[] | {host,days:.days_remaining}'
               certwatch check --from-file domains.txt --warn-days 30 --crit-days 7 --prometheus > /var/lib/node_exporter/textfile_collector/certwatch.prom
               certwatch check $(dig +short A factus.dk) --port 443 --github-actions
-            """);
+            """;
+}
+
+public sealed class HelpAiCommand : Command
+{
+    public override int Execute(CommandContext ctx)
+    {
+        Console.WriteLine(AgentGuidance.Text);
         return 0;
     }
 }
