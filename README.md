@@ -34,9 +34,33 @@ Total 2 · 2 ok · 0 warning · 0 critical · 0 error
 
 ## Install
 
-Single-file AOT binaries from [Releases](https://github.com/FactusConsulting/certwatch/releases) for Linux, macOS and Windows.
+### Homebrew (macOS / Linux)
 
-Or build from source:
+```sh
+brew tap factusconsulting/tools
+brew install certwatch
+```
+
+The tap lives at [FactusConsulting/homebrew-tools](https://github.com/FactusConsulting/homebrew-tools); `certwatch` is bumped there automatically on every release.
+
+### Chocolatey (Windows, self-hosted feed)
+
+`certwatch` is published to a self-hosted Chocolatey feed on GitHub Pages (not the
+community repository). Add the source once, then install:
+
+```powershell
+choco source add -n=certwatch -s="https://factusconsulting.github.io/certwatch/chocolatey/index.json"
+choco install certwatch --source=certwatch -y
+```
+
+Upgrade with `choco upgrade certwatch --source=certwatch`. The package installs a
+single self-contained `certwatch.exe` and shims it onto your `PATH`.
+
+### Prebuilt binaries
+
+Single-file AOT binaries from [Releases](https://github.com/FactusConsulting/certwatch/releases) for Linux, macOS and Windows. Unpack and move to `~/bin/` or `/usr/local/bin/`. No runtime needed (AOT-compiled).
+
+### Build from source
 
 ```sh
 git clone https://github.com/FactusConsulting/certwatch.git
