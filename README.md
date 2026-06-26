@@ -37,11 +37,11 @@ Total 2 · 2 ok · 0 warning · 0 critical · 0 error
 ### Homebrew (macOS / Linux)
 
 ```sh
-brew tap factusconsulting/tools
+brew tap factusconsulting/tap
 brew install certwatch
 ```
 
-The tap lives at [FactusConsulting/homebrew-tools](https://github.com/FactusConsulting/homebrew-tools); `certwatch` is bumped there automatically on every release.
+The tap lives at [FactusConsulting/homebrew-tap](https://github.com/FactusConsulting/homebrew-tap); `certwatch` is bumped there automatically on every release.
 
 ### Chocolatey (Windows, self-hosted feed)
 
