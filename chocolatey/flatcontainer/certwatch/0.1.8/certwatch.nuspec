@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>certwatch</id>
+    <version>0.1.8</version>
+    <title>certwatch</title>
+    <authors>FactusConsulting</authors>
+    <owners>FactusConsulting</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <licenseUrl>https://github.com/FactusConsulting/certwatch/blob/main/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/FactusConsulting/certwatch</projectUrl>
+    <description>Agent-friendly CLI for monitoring SSL/TLS certificate expiry across many hosts. Checks one or many hosts, reports days remaining and severity, with exit codes that double as severity. Composable through pipes and stdin, colored table for humans, and stable JSON / Prometheus / GitHub Actions output for agents and CI. Ships as a single self-contained executable.</description>
+    <summary>Agent-friendly CLI for monitoring SSL/TLS certificate expiry across hosts.</summary>
+    <tags>tls ssl certificate cli expiry monitoring prometheus ci ai agent dotnet</tags>
+    <packageSourceUrl>https://github.com/FactusConsulting/certwatch</packageSourceUrl>
+  </metadata>
+</package>
