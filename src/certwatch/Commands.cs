@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Threading;
 using Spectre.Console.Cli;
 
 namespace CertWatch;
@@ -74,38 +75,59 @@ public sealed class CheckSettings : GlobalSettings
 
 public sealed class CheckCommand : AsyncCommand<CheckSettings>
 {
-    public override async Task<int> ExecuteAsync(CommandContext ctx, CheckSettings s)
+    protected override async Task<int> ExecuteAsync(CommandContext context, CheckSettings s, CancellationToken cancellationToken)
     {
         s.ApplyToRender();
 
         var hosts = new List<string>(s.Hosts);
+
         if (!string.IsNullOrEmpty(s.FromFile))
         {
             if (!File.Exists(s.FromFile)) { Render.Error($"file not found: {s.FromFile}"); return 78; }
-            foreach (var line in await File.ReadAllLinesAsync(s.FromFile))
-            {
-                var trimmed = line.Trim();
-                if (trimmed.Length == 0 || trimmed.StartsWith('#')) continue;
-                hosts.Add(trimmed);
-            }
+            AddHostLines(hosts, await File.ReadAllLinesAsync(s.FromFile));
         }
+
         if (!Console.IsInputRedirected && hosts.Count == 0)
         {
             Render.Error("no hosts provided", "Provide hosts as args, via --from-file, or pipe via stdin.");
             return 78;
         }
+
         if (Console.IsInputRedirected)
         {
-            string? line;
-            while ((line = await Console.In.ReadLineAsync()) != null)
-            {
-                var trimmed = line.Trim();
-                if (trimmed.Length > 0 && !trimmed.StartsWith('#')) hosts.Add(trimmed);
-            }
+            await AddHostLinesFromStdinAsync(hosts);
         }
+
         if (hosts.Count == 0) { Render.Error("no hosts to check"); return 78; }
 
-        var results = new List<CertResult>();
+        var results = await CheckAllAsync(hosts, s);
+        var report = BuildReport(results);
+        Render.Emit(report);
+        return ExitCodeFor(report);
+    }
+
+    private static void AddHostLines(List<string> hosts, IEnumerable<string> lines)
+    {
+        foreach (var line in lines)
+        {
+            var trimmed = line.Trim();
+            if (trimmed.Length == 0 || trimmed.StartsWith('#')) continue;
+            hosts.Add(trimmed);
+        }
+    }
+
+    private static async Task AddHostLinesFromStdinAsync(List<string> hosts)
+    {
+        string? line;
+        while ((line = await Console.In.ReadLineAsync()) != null)
+        {
+            var trimmed = line.Trim();
+            if (trimmed.Length > 0 && !trimmed.StartsWith('#')) hosts.Add(trimmed);
+        }
+    }
+
+    private static async Task<CertResult[]> CheckAllAsync(List<string> hosts, CheckSettings s)
+    {
         var sem = new SemaphoreSlim(Math.Max(1, s.Concurrency));
         var tasks = hosts.Select(async h =>
         {
@@ -113,17 +135,23 @@ public sealed class CheckCommand : AsyncCommand<CheckSettings>
             try { return await Checker.CheckAsync(h, s.Port, s.WarnDays, s.CritDays, s.Timeout, default); }
             finally { sem.Release(); }
         });
-        results.AddRange(await Task.WhenAll(tasks));
+        return await Task.WhenAll(tasks);
+    }
 
+    private static CertReport BuildReport(CertResult[] results)
+    {
         var ok = results.Count(r => r.Severity == Severity.Ok);
         var warn = results.Count(r => r.Severity == Severity.Warning);
         var crit = results.Count(r => r.Severity == Severity.Critical);
         var err = results.Count(r => r.Severity == Severity.Error);
-        var report = new CertReport(results.Count, ok, warn, crit, err, results.ToArray());
-        Render.Emit(report);
-        if (crit > 0) return 2;
-        if (warn > 0) return 1;
-        if (err > 0) return 74;
+        return new CertReport(results.Length, ok, warn, crit, err, results);
+    }
+
+    private static int ExitCodeFor(CertReport report)
+    {
+        if (report.Critical > 0) return 2;
+        if (report.Warning > 0) return 1;
+        if (report.Errors > 0) return 74;
         return 0;
     }
 }
@@ -170,7 +198,7 @@ public static class AgentGuidance
 
 public sealed class HelpAiCommand : Command
 {
-    public override int Execute(CommandContext ctx)
+    protected override int Execute(CommandContext context, CancellationToken cancellationToken)
     {
         Console.WriteLine(AgentGuidance.Text);
         return 0;
