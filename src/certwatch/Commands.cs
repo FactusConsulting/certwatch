@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Threading;
 using Spectre.Console.Cli;
 
 namespace CertWatch;
@@ -74,7 +75,7 @@ public sealed class CheckSettings : GlobalSettings
 
 public sealed class CheckCommand : AsyncCommand<CheckSettings>
 {
-    public override async Task<int> ExecuteAsync(CommandContext ctx, CheckSettings s)
+    protected override async Task<int> ExecuteAsync(CommandContext ctx, CheckSettings s, CancellationToken cancellation)
     {
         s.ApplyToRender();
 
@@ -170,7 +171,7 @@ public static class AgentGuidance
 
 public sealed class HelpAiCommand : Command
 {
-    public override int Execute(CommandContext ctx)
+    protected override int Execute(CommandContext ctx, CancellationToken cancellation)
     {
         Console.WriteLine(AgentGuidance.Text);
         return 0;
