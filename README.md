@@ -34,7 +34,7 @@ Total 2 · 2 ok · 0 warning · 0 critical · 0 error
 
 ## Install
 
-### Homebrew (macOS / Linux)
+### Homebrew (Linux)
 
 ```sh
 brew tap factusconsulting/tap
@@ -58,7 +58,7 @@ single self-contained `certwatch.exe` and shims it onto your `PATH`.
 
 ### Prebuilt binaries
 
-Single-file AOT binaries from [Releases](https://github.com/FactusConsulting/certwatch/releases) for Linux, macOS and Windows. Unpack and move to `~/bin/` or `/usr/local/bin/`. No runtime needed (AOT-compiled).
+Single-file AOT binaries from [Releases](https://github.com/FactusConsulting/certwatch/releases) for Linux and Windows. macOS is not built: the binaries are self-contained, so a Mac would need one of its own, and nothing here runs macOS. Unpack and move to `~/bin/` or `/usr/local/bin/`. No runtime needed (AOT-compiled).
 
 ### Build from source
 
