@@ -75,7 +75,7 @@ public sealed class CheckSettings : GlobalSettings
 
 public sealed class CheckCommand : AsyncCommand<CheckSettings>
 {
-    protected override async Task<int> ExecuteAsync(CommandContext context, CheckSettings s, CancellationToken cancellationToken)
+    public override async Task<int> ExecuteAsync(CommandContext context, CheckSettings s, CancellationToken cancellationToken)
     {
         s.ApplyToRender();
 
@@ -198,7 +198,7 @@ public static class AgentGuidance
 
 public sealed class HelpAiCommand : Command
 {
-    protected override int Execute(CommandContext context, CancellationToken cancellationToken)
+    public override int Execute(CommandContext context, CancellationToken cancellationToken)
     {
         Console.WriteLine(AgentGuidance.Text);
         return 0;
